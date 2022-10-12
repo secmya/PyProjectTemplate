@@ -1,0 +1,72 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: check-added-large-files
+    -   id: check-ast
+    -   id: check-builtin-literals
+    -   id: check-docstring-first
+    -   id: check-executables-have-shebangs
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: check-yaml
+    -   id: debug-statements
+    -   id: detect-aws-credentials
+        args: ["--allow-missing-credentials"]
+    -   id: detect-private-key
+    -   id: double-quote-string-fixer
+    -   id: end-of-file-fixer
+    -   id: fix-encoding-pragma
+    -   id: mixed-line-ending
+    -   id: trailing-whitespace
+    -   id: fix-encoding-pragma
+# Python
+-   repo: https://github.com/PyCQA/autoflake
+    rev: v1.6.1
+    hooks:
+    -   id: autoflake
+        args: ['--in-place', '--remove-all-unused-imports']
+-   repo: https://github.com/psf/black
+    rev: 22.8.0
+    hooks:
+    -   id: black
+        args: ["--skip-string-normalization"]
+-   repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+    -   id: isort
+        args: ["--profile", "black"]
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.982
+    hooks:
+    -   id: mypy
+# Secrets
+repos:
+-   repo: https://github.com/sirwart/ripsecrets.git
+    rev: v0.1.5
+    hooks:
+    -   id: ripsecrets
+# Markdown
+-   repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.32.2
+    hooks:
+    -   id: markdownlint
+    -   id: markdownlint-fix
+        fail_fast: true
+# Dependencies
+-   repo: local
+    hooks:
+    -   id: pip-freeze
+        name: pip-freeze
+        entry: bash -c 'pip list --format=freeze > requirements.txt'
+        language: system
+-   repo: local
+    hooks:
+    -   id: conda-export
+        name: conda export
+        # --from-history should be used, however, pip installs are not currently
+        # included. See: https://github.com/conda/conda/issues/9628
+        entry: bash -c 'conda env export --no-builds | grep -v "^prefix:" > environment.yml'
+        language: system
